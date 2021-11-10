@@ -5,7 +5,7 @@
   "author": "surtich <surtich@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
     "webpack": "^5.63.0",
