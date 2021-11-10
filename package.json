@@ -1,0 +1,17 @@
+{
+  "name": "piano",
+  "version": "1.0.0",
+  "private": true,
+  "author": "surtich <surtich@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "webpack": "^5.63.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
