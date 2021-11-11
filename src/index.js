@@ -1,3 +1,4 @@
+import "../css/main.css";
 import "../css/key.css";
 import { genPianoKeys } from "./piano.js";
 

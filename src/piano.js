@@ -12,7 +12,3 @@ export function genPianoKeys() {
 
     return pianoKeys;
 }
-
-export default function () {
-    console.log("kk");
-}
