@@ -16,6 +16,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'Piano music generator',
+            template: './html/index.html'
         }),
     ],
     module: {
