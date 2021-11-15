@@ -4,21 +4,25 @@ import "../css/piano.css";
 import { genPianoKeys } from "./piano.js";
 
 const pianoKeyWhiteTemplate = document.createElement("li");
-pianoKeyWhiteTemplate.setAttribute("onclick", " setFrequency(100)");
 pianoKeyWhiteTemplate.classList.add("white", "key");
 
-
 const pianoKeyBlackTemplate = document.createElement("li");
-pianoKeyWhiteTemplate.setAttribute("onclick", " setFrequency(100)");
 pianoKeyBlackTemplate.classList.add("black", "key");
 
 
 function createPianoKey(key) {
     const pianoKeyDOM = key.includes("#") ?
         pianoKeyBlackTemplate.cloneNode() :
-        pianoKeyWhiteTemplate.cloneNode()
+        pianoKeyWhiteTemplate.cloneNode();
 
-    // pianoKeyDOM.innerText = key;
+    pianoKeyDOM.onmousedown = function (event) {
+        console.log(event.target.dataset.key, "pressed");
+    };
+
+    pianoKeyDOM.onmouseup = function (event) {
+        console.log(event.target.dataset.key, "released");
+    };
+    pianoKeyDOM.dataset.key = key;
     return pianoKeyDOM;
 }
 
