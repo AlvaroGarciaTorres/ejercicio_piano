@@ -15,13 +15,6 @@ function createPianoKey(key) {
         pianoKeyBlackTemplate.cloneNode() :
         pianoKeyWhiteTemplate.cloneNode();
 
-    pianoKeyDOM.onmousedown = function (event) {
-        console.log(event.target.dataset.key, "pressed");
-    };
-
-    pianoKeyDOM.onmouseup = function (event) {
-        console.log(event.target.dataset.key, "released");
-    };
     pianoKeyDOM.dataset.key = key;
     return pianoKeyDOM;
 }
@@ -29,6 +22,18 @@ function createPianoKey(key) {
 function createPiano() {
     const pianoDOM = document.createElement("ul");
     pianoDOM.classList.add("piano");
+
+    pianoDOM.addEventListener("mousedown", function (event) {
+        if (event.target.dataset.key) {
+            console.log(event.target.dataset.key, "pressed");
+        }
+    }, true);
+
+    pianoDOM.addEventListener("mouseup", function (event) {
+        if (event.target instanceof HTMLLIElement) {
+            console.log(event.target.dataset.key, "released");
+        }
+    }, true);
 
     const pianoKeys = genPianoKeys();
     pianoKeys.map(createPianoKey).forEach(function (pianoKeyDOM) {
