@@ -35,6 +35,11 @@ function createPiano() {
         }
     }, true);
 
+
+    document.body.onkeydown = function (event) {
+        console.log(event.code, event.key, event.shiftKey)
+    }
+
     const pianoKeys = genPianoKeys();
     pianoKeys.map(createPianoKey).forEach(function (pianoKeyDOM) {
         pianoDOM.appendChild(pianoKeyDOM);
