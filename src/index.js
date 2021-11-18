@@ -1,7 +1,11 @@
 import "../css/main.css";
 import "../css/key.css";
+import "../css/octave.css";
 import "../css/piano.css";
-import { genPianoKeys } from "./piano.js";
+import { genPianoKeys, musicNotes } from "./piano.js";
+
+
+let octaveSelected = 1;
 
 const pianoKeyWhiteTemplate = document.createElement("li");
 pianoKeyWhiteTemplate.classList.add("white", "key");
@@ -19,11 +23,27 @@ function createPianoKey(key) {
     return pianoKeyDOM;
 }
 
+function createPianoOctave(octave) {
+    const pianoOctave = document.createElement("ul");
+
+    octave.forEach(key => {
+        const pianoKey = createPianoKey(key);
+        pianoOctave.appendChild(pianoKey);
+    });
+
+    const pianoOctaveContainer = document.createElement("li");
+    pianoOctaveContainer.classList.add("octave");
+    pianoOctaveContainer.appendChild(pianoOctave);
+
+    return pianoOctaveContainer;
+}
+
 function createPiano() {
     const pianoDOM = document.createElement("ul");
     pianoDOM.classList.add("piano");
 
     pianoDOM.addEventListener("mousedown", function (event) {
+
         if (event.target.dataset.key) {
             console.log(event.target.dataset.key, "pressed");
         }
@@ -37,21 +57,59 @@ function createPiano() {
 
 
     document.body.onkeydown = function (event) {
-        console.log(event.code, event.key, event.shiftKey)
+        if (event.key >= "0" && event.key <= "8") {
+            octaveSelection(parseInt(event.key));
+        } else {
+            pulseKey(event, true);
+        }
+    }
+
+    document.body.onkeyup = function (event) {
+        pulseKey(event, false);
     }
 
     const pianoKeys = genPianoKeys();
-    pianoKeys.map(createPianoKey).forEach(function (pianoKeyDOM) {
-        pianoDOM.appendChild(pianoKeyDOM);
+
+    pianoKeys.map(createPianoOctave).forEach(function (pianoOctaveDOM) {
+        pianoDOM.appendChild(pianoOctaveDOM);
     });
 
     return pianoDOM;
 }
 
+function octaveSelection(octave) {
+    const octavesDOM = document.getElementsByClassName("octave");
+
+    octavesDOM[octaveSelected].classList.remove("selected");
+    octavesDOM[octave].classList.add("selected");
+
+    octaveSelected = octave;
+}
+
+function pulseKey(event, isDown) {
+    const octave = octaveSelected;
+
+    let musicNote = event.key.toUpperCase();
+    if (event.shiftKey) {
+        musicNote += "#";
+    }
+
+    if (!musicNotes.includes(musicNote)) {
+        return;
+    }
+    const key = musicNote + octave;
+    const keyDOM = document.querySelector(`[data-key='${key}']`);
+    if (isDown) {
+        keyDOM.classList.add("active");
+    } else {
+        keyDOM.classList.remove("active");
+    }
+}
 
 const pianoDOM = createPiano();
 
 document.body.appendChild(pianoDOM);
+octaveSelection(octaveSelected);
 
 const audio = new AudioContext();
 
