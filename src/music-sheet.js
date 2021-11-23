@@ -14,7 +14,6 @@ export function readMusicSheet(musicSheet) {
         keyDOM.innerHTML = key;
 
         musicSheetDOM.appendChild(keyDOM);
-
     });
 }
 
@@ -43,7 +42,6 @@ export function playMusicSheet() {
             return;
         }
     }, 500);
-
 
     return function stop() {
         clearInterval(interval);

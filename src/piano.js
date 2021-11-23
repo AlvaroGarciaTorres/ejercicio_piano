@@ -1,3 +1,5 @@
+import { playLigato } from "./ligato";
+
 export const musicNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 export function genPianoKeys() {
@@ -19,7 +21,6 @@ export function genPianoKeys() {
     }
     return pianoKeys;
 }
-
 
 export let octaveSelected = 1;
 
@@ -57,8 +58,12 @@ export function createPiano() {
     const pianoDOM = document.createElement("ul");
     pianoDOM.classList.add("piano");
 
-    pianoDOM.addEventListener("mousedown", function (event) {
+    const pianoDiv = document.createElement("div");
+    //pianoDiv.id = "piano";
+    pianoDiv.classList.add("piano_div");
+    document.body.insertAdjacentElement("beforebegin", pianoDiv);
 
+    pianoDOM.addEventListener("mousedown", function (event) {
         if (event.target.dataset.key) {
             console.log(event.target.dataset.key, "pressed");
         }
@@ -92,6 +97,7 @@ export function createPiano() {
     return pianoDOM;
 }
 
+
 export function octaveSelection(octave) {
     const octavesDOM = document.getElementsByClassName("octave");
 
@@ -124,5 +130,4 @@ export function playKey(key, isDown) {
         keyDOM.classList.remove("active");
     }
 }
-
 
