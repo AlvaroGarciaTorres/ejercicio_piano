@@ -1,10 +1,18 @@
 import "../css/music-sheet.css";
 import { playKey } from "./piano.js";
 
-export const musicSheet = "A1,C#3,B1,C4,F5,C3,A#2,C1";
+let actualKeyIndex = 0;
 
-export function readMusicSheet(musicSheet) {
+//export const musicSheet = "A1,C#3,B1,C4,F5,C3,A#2,C1";
+
+export function readMusicSheet(musicSheet){
     const musicSheetDOM = document.getElementById("music-sheet");
+    if(musicSheetDOM.childElementCount != 0){
+        const childrenNumber = musicSheetDOM.childElementCount;
+        for(let i = 0; i < childrenNumber; i++){
+            musicSheetDOM.removeChild(musicSheetDOM.childNodes[0]);
+        }
+    };
     musicSheetDOM.classList.add("music-sheet");
     const keys = musicSheet.split(",");
 
@@ -15,11 +23,10 @@ export function readMusicSheet(musicSheet) {
 
         musicSheetDOM.appendChild(keyDOM);
     });
+    actualKeyIndex = 0;
 }
 
-let actualKeyIndex = 0;
-
-export function playMusicSheet() {
+export function playMusicSheet(callback) {
     const musicSheetDOM = document.getElementById("music-sheet");
     const musicSheetKeysDOM = musicSheetDOM.childNodes;
 
@@ -39,11 +46,14 @@ export function playMusicSheet() {
         if (actualKeyIndex >= musicSheetKeysDOM.length) {
             clearInterval(interval);
             actualKeyIndex = 0;
+            callback();
             return;
         }
     }, 500);
 
     return function stop() {
+        const musicSheetKeyDOM = musicSheetKeysDOM[actualKeyIndex];
+        musicSheetKeyDOM.classList.add("play"); //marca la nota que se está reproduciendo cuando se pulsa stop
         clearInterval(interval);
     };
 

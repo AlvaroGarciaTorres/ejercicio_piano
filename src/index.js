@@ -2,52 +2,85 @@ import "../css/main.css";
 import "../css/key.css";
 import "../css/octave.css";
 import "../css/piano.css";
-import { createPiano, octaveSelection, octaveSelected } from "./piano.js";
-import { musicSheet, readMusicSheet, playMusicSheet } from "./music-sheet.js";
+import { allDOMKeys, createPiano, octaveSelection, octaveSelected } from "./piano.js";
+import { actualKeyIndex, readMusicSheet, playMusicSheet } from "./music-sheet.js";
 import { playLigato } from "./ligato.js";
+import { checkPiano } from "./utilityFunctions.js";
 
-/*const pianoDOM = createPiano();
+export let currentPiano;
+export let allDOMPianos;
 
-document.getElementById("piano").appendChild(pianoDOM);
-octaveSelection(octaveSelected);*/
-readMusicSheet(musicSheet);
+//const pianoDOM = createPiano();
 
-let currentPiano = 1;
+//document.getElementById("piano").appendChild(pianoDOM);
+//readMusicSheet(musicSheet);
+
+currentPiano = 0;
 
 const play = document.getElementById("play");
 const stop = document.getElementById("stop");
 const ligato = document.getElementById("ligato");
 const newPiano = document.getElementById("createPiano");
+const file = document.getElementById("file");
+stop.style.visibility = "hidden";
+play.style.visibility = "hidden";
 let stopfn = function () {
 
 };
 
+
 play.onclick = function (event) {
-    stopfn = playMusicSheet();
     event.preventDefault();
+    if(!checkPiano()) return; 
+    stop.style.visibility = "visible";
+    play.disabled = true;
+    stop.disabled = false;
+    file.disabled = true;
+    stopfn = playMusicSheet(function() {
+        play.disabled = false;
+        stop.disabled = true; 
+        file.disabled = false;
+    });
 }
 
 stop.onclick = function (event) {
-    stopfn();
     event.preventDefault();
+    if(!checkPiano()) return;
+    stop.disabled = true;
+    play.disabled = false;
+    file.disabled = false;
+    stopfn();
 }
 
-ligato.onclick= function (event) { 
+ligato.onclick= function (event) {
     event.preventDefault();
-    stopfn = playLigato(currentPiano);
-    event.preventDefault();   
+    if(!checkPiano()) return; 
+    stop.style.visibility = "visible";
+    stop.disabled = false;
+    play.disabled = true;
+    file.disabled = true;
+    stopfn = playLigato(function(){
+        stop.disabled = true;
+        play.disabled = false;
+        file.disabled = false;
+    });   
 }
 
 newPiano.onclick= function (event) { 
-    createNewPiano();
+    allDOMPianos = createNewPiano();
     event.preventDefault();   
 }
 
-const createNewPiano = () => {
+const createNewPiano = () => {    
     const pianoDOM = createPiano();
     const numberOfPianos = document.getElementsByClassName("piano_div").length;
-    document.getElementsByClassName("piano_div")[numberOfPianos-1].appendChild(pianoDOM);
-    pianoDOM.dataset.number = numberOfPianos;
+    document.getElementsByClassName("piano_div")[numberOfPianos-1].appendChild(pianoDOM);  
+    if(numberOfPianos == 1){
+        const p = document.createElement("p");
+        p.innerHTML = "Selecciona un piano:";
+        p.style.color = "white";
+        document.body.appendChild(p);
+    }
     const button = document.createElement("button");
     button.innerHTML = `Piano ${numberOfPianos}`;
     button.dataset.number = numberOfPianos;
@@ -55,8 +88,26 @@ const createNewPiano = () => {
     button.addEventListener("click", function (event){
         currentPiano = event.target.dataset.number;
         console.log(`Piano selected: ${currentPiano}`);
+        octaveSelection(currentPiano - 1);
     })
+    return document.querySelectorAll(".piano");
 }
+
+file.addEventListener("change", handleFiles, false);
+
+function handleFiles() {
+    const fileList = this.files;
+    const file = fileList[0];
+
+    const reader = new FileReader();
+    reader.onload = (function(){
+        readMusicSheet(reader.result);
+    })
+    reader.readAsText(file);
+    play.style.visibility = "visible";
+}
+
+
 
 
 

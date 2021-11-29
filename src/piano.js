@@ -1,6 +1,9 @@
 import { playLigato } from "./ligato";
+import { currentPiano, allDOMPianos } from "./index.js";
+import { checkPiano } from "./utilityFunctions";
 
 export const musicNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+export const allDOMKeys = {};
 
 export function genPianoKeys() {
     let pianoKeys = [];
@@ -22,7 +25,8 @@ export function genPianoKeys() {
     return pianoKeys;
 }
 
-export let octaveSelected = 1;
+let oldOctave = 1;
+export let octaveSelected = oldOctave;
 
 const pianoKeyWhiteTemplate = document.createElement("li");
 pianoKeyWhiteTemplate.classList.add("white", "key");
@@ -44,28 +48,32 @@ function createPianoOctave(octave) {
 
     octave.forEach(key => {
         const pianoKey = createPianoKey(key);
+        allDOMKeys[key] = pianoKey;
         pianoOctave.appendChild(pianoKey);
     });
-
     const pianoOctaveContainer = document.createElement("li");
     pianoOctaveContainer.classList.add("octave");
     pianoOctaveContainer.appendChild(pianoOctave);
-
     return pianoOctaveContainer;
 }
 
+
 export function createPiano() {
+    const pianoDiv = document.createElement("div");
+    //pianoDiv.id = "piano"; //el id no se puede usar porque hay varios pianos
+    pianoDiv.classList.add("piano_div");
+    if(allDOMPianos == undefined) pianoDiv.dataset.pianoNumber = `1`;
+    else pianoDiv.dataset.pianoNumber = `${allDOMPianos.length + 1}`;
+    document.body.insertAdjacentElement("beforebegin", pianoDiv); //añado el div de los pianos al principio de la página
     const pianoDOM = document.createElement("ul");
     pianoDOM.classList.add("piano");
-
-    const pianoDiv = document.createElement("div");
-    //pianoDiv.id = "piano";
-    pianoDiv.classList.add("piano_div");
-    document.body.insertAdjacentElement("beforebegin", pianoDiv);
 
     pianoDOM.addEventListener("mousedown", function (event) {
         if (event.target.dataset.key) {
             console.log(event.target.dataset.key, "pressed");
+            let piano = event.target.parentNode.parentNode.parentNode.parentNode.dataset.pianoNumber;
+            octaveSelected = event.target.dataset.key.substr(-1);
+            octaveSelection(piano - 1);
         }
     }, true);
 
@@ -98,13 +106,13 @@ export function createPiano() {
 }
 
 
-export function octaveSelection(octave) {
-    const octavesDOM = document.getElementsByClassName("octave");
+export function octaveSelection(piano) {
+    const octavesDOM = allDOMPianos[piano].getElementsByClassName("octave");//Selecciona las octavas del piano activo
+    
+    octavesDOM[oldOctave].classList.remove("selected");
+    octavesDOM[octaveSelected].classList.add("selected");
 
-    octavesDOM[octaveSelected].classList.remove("selected");
-    octavesDOM[octave].classList.add("selected");
-
-    octaveSelected = octave;
+    oldOctave = octaveSelected;
 }
 
 function pulseKey(event, isDown) {
@@ -123,7 +131,9 @@ function pulseKey(event, isDown) {
 }
 
 export function playKey(key, isDown) {
-    const keyDOM = document.querySelector(`[data-key='${key}']`);
+    const pianoToPlay = allDOMPianos[currentPiano - 1]; //selecciona el piano actual  
+    const keyDOM = pianoToPlay.querySelector(`[data-key='${key}']`);
+    
     if (isDown) {
         keyDOM.classList.add("active");
     } else {

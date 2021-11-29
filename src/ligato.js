@@ -1,10 +1,9 @@
 import { playKey } from "./piano.js";
+import { currentPiano, allDOMPianos } from "./index.js";
 
-export function playLigato(chosenPiano) {
-    //const allKeys = document.querySelectorAll("li[class='black key'], li[class='white key']");
-    const pianos = document.querySelectorAll("ul[class='piano']"); 
-    const playingPiano = pianos[chosenPiano - 1];
-    const allKeys = playingPiano.querySelectorAll("li[class='black key'], li[class='white key']");
+export function playLigato(callback) {
+    const playingPiano = allDOMPianos[currentPiano - 1];
+    const allKeys = playingPiano.querySelectorAll(".key");
     let keysArray = [];
     for(let i = 0; i < allKeys.length; i++){
         keysArray.push(allKeys[i].dataset.key);
@@ -32,6 +31,7 @@ export function playLigato(chosenPiano) {
         } else {
             clearInterval(interval);
             actualKeyIndex = 0;
+            callback();
             return;
         }
 
