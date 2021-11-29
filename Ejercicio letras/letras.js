@@ -1,6 +1,10 @@
 
 const sentence = "El perro del hortelano ni come ni deja comer";
-const timeout = 3000;
+const timeout = 200;
+let currentLetterIndex = 0;
+let stopfn = function () {
+
+};
 
 const createLetterList = () => {
 
@@ -20,6 +24,16 @@ const createLetterList = () => {
     return lettersList;
 }
 
+const createList = () => { 
+    const lettersDiv = document.createElement("div");
+    lettersDiv.classList.add("lettersDiv");
+    const lettersUl = document.createElement("ul");
+    lettersUl.appendChild(lettersList);
+    lettersDiv.appendChild(lettersUl);
+    document.body.appendChild(lettersDiv);
+    return lettersUl;
+}
+
 const createPrintButton = () => {
     const button = document.createElement("button");
     button.id = "print";
@@ -27,34 +41,42 @@ const createPrintButton = () => {
     document.body.appendChild(button);
 }
 
-function printLetters(){
-    const lettersDiv = document.createElement("div");
-    lettersDiv.classList.add("lettersDiv");
-    const lettersUl = document.createElement("ul");
-    lettersDiv.appendChild(lettersUl);
-    document.body.appendChild(lettersDiv);
-    const printLetter = (letterLi) => lettersUl.appendChild(letterLi);
-
-    //Array.prototype.forEach.call(lettersList.children, element => console.log(element))
-
-
-    const interval = setInterval(function(){
-        const letterLi = (lettersList.children[currentLetterIndex]);
-        
-        setTimeout(printLetter(letterLi), 1000);
-        
-        currentLetterIndex++;
-    }, 2000);
+function colorLetter(letterLi) {
+    letterLi.classList.add("paint");
 }
 
-let currentLetterIndex = 0;
+function colorLetters(){
+    //Array.prototype.forEach.call(lettersList.children, element => console.log(element))
+    
+    const numberOfLetters = lettersList.childElementCount;
+
+    const interval = setInterval(function(){
+        const letterLi = lettersList.children[currentLetterIndex];            
+        colorLetter(letterLi);
+        
+        currentLetterIndex++;
+        if (currentLetterIndex >= numberOfLetters) {
+            clearInterval(interval);
+            currentLetterIndex = 0;
+            return;
+        }
+    }, timeout);
+
+    return function stop() {
+        const letterLi = lettersList.children[currentLetterIndex];
+        letterLi.classList.add("paint"); //marca la nota que se está reproduciendo cuando se pulsa stop
+        clearInterval(interval);
+    };
+}
+
 
 const lettersList = createLetterList();
 
 createPrintButton();
-
-console.log(lettersList.children[0]);
+const lettersUl = createList();
 
 const printButton = document.getElementById("print");
-
-printButton.addEventListener("click", printLetters);
+printButton.onclick = function(event){
+    event.preventDefault();
+    stopfn = colorLetters;
+}
