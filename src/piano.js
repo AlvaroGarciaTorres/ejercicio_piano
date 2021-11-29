@@ -45,7 +45,7 @@ function createPianoKey(key) {
 
 function createPianoOctave(octave) {
     const pianoOctave = document.createElement("ul");
-
+    
     octave.forEach(key => {
         const pianoKey = createPianoKey(key);
         allDOMKeys[key] = pianoKey;
