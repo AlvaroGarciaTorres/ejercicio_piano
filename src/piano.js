@@ -45,7 +45,7 @@ function createPianoKey(key) {
 
 function createPianoOctave(octave) {
     const pianoOctave = document.createElement("ul");
-    
+
     octave.forEach(key => {
         const pianoKey = createPianoKey(key);
         allDOMKeys[key] = pianoKey;
@@ -73,7 +73,7 @@ export function createPiano() {
             console.log(event.target.dataset.key, "pressed");
             let piano = event.target.parentNode.parentNode.parentNode.parentNode.dataset.pianoNumber;
             octaveSelected = event.target.dataset.key.substr(-1);
-            octaveSelection(piano - 1);
+            octaveSelection(piano - 1, octaveSelected);
         }
     }, true);
 
@@ -86,7 +86,9 @@ export function createPiano() {
 
     document.body.onkeydown = function (event) {
         if (event.key >= "0" && event.key <= "8") {
-            octaveSelection(parseInt(event.key));
+            octaveSelected = parseInt(event.key);
+            if(currentPiano == 0) octaveSelection(currentPiano);
+            else octaveSelection(currentPiano -1, octaveSelected);
         } else {
             pulseKey(event, true);
         }
@@ -105,14 +107,16 @@ export function createPiano() {
     return pianoDOM;
 }
 
-
-export function octaveSelection(piano) {
+export function octaveSelection(piano, octave) {
     const octavesDOM = allDOMPianos[piano].getElementsByClassName("octave");//Selecciona las octavas del piano activo
-    
-    octavesDOM[oldOctave].classList.remove("selected");
-    octavesDOM[octaveSelected].classList.add("selected");
+      
+    for(let i = 0; i<allDOMPianos.length; i++){
+        let toRemove = allDOMPianos[i].getElementsByClassName("selected")[0];
+        if(toRemove != undefined) allDOMPianos[i].getElementsByClassName("selected")[0].classList.remove("selected");
+    }
+    octavesDOM[octave].classList.add("selected");
 
-    oldOctave = octaveSelected;
+    oldOctave = octave;
 }
 
 function pulseKey(event, isDown) {

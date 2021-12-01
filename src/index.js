@@ -3,7 +3,7 @@ import "../css/key.css";
 import "../css/octave.css";
 import "../css/piano.css";
 import { allDOMKeys, createPiano, octaveSelection, octaveSelected } from "./piano.js";
-import { actualKeyIndex, readMusicSheet, playMusicSheet } from "./music-sheet.js";
+import { actualKeyIndex, readMusicSheet, playMusicSheet, musicSheet } from "./music-sheet.js";
 import { playLigato } from "./ligato.js";
 import { checkPiano } from "./utilityFunctions.js";
 
@@ -15,15 +15,14 @@ export let allDOMPianos;
 //document.getElementById("piano").appendChild(pianoDOM);
 //readMusicSheet(musicSheet);
 
-currentPiano = 0;
+currentPiano = 1;
 
 const play = document.getElementById("play");
 const stop = document.getElementById("stop");
 const ligato = document.getElementById("ligato");
 const newPiano = document.getElementById("createPiano");
 const file = document.getElementById("file");
-stop.style.visibility = "hidden";
-play.style.visibility = "hidden";
+//play.style.visibility = "hidden";
 let stopfn = function () {
 
 };
@@ -88,11 +87,10 @@ const createNewPiano = () => {
     button.addEventListener("click", function (event){
         currentPiano = event.target.dataset.number;
         console.log(`Piano selected: ${currentPiano}`);
-        octaveSelection(currentPiano - 1);
     })
     return document.querySelectorAll(".piano");
 }
-
+readMusicSheet(musicSheet);
 file.addEventListener("change", handleFiles, false);
 
 function handleFiles() {

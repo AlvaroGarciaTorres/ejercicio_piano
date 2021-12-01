@@ -1,4 +1,4 @@
-import { playKey } from "./piano.js";
+import { octaveSelection, playKey } from "./piano.js";
 import { currentPiano, allDOMPianos } from "./index.js";
 
 export function playLigato(callback) {
@@ -14,7 +14,8 @@ export function playLigato(callback) {
 
     const interval = setInterval(function () {
         const key = keysArray[actualKeyIndex];
-        //console.log(key);
+        let octave = key.substr(-1);
+        octaveSelection(currentPiano -1, octave);
         playKey(key, true);
 
         setTimeout(function () {

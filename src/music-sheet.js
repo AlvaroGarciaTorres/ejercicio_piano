@@ -1,9 +1,10 @@
+import { currentPiano } from ".";
 import "../css/music-sheet.css";
-import { playKey } from "./piano.js";
+import { octaveSelected, octaveSelection, playKey } from "./piano.js";
 
 let actualKeyIndex = 0;
 
-//export const musicSheet = "A1,C#3,B1,C4,F5,C3,A#2,C1";
+export const musicSheet = "A1,C#3,B1,C4,F5,C3,A#2,C1";
 
 export function readMusicSheet(musicSheet){
     const musicSheetDOM = document.getElementById("music-sheet");
@@ -34,6 +35,9 @@ export function playMusicSheet(callback) {
         const musicSheetKeyDOM = musicSheetKeysDOM[actualKeyIndex];
         musicSheetKeyDOM.classList.add("play");
         const key = musicSheetKeyDOM.innerText;
+        let octave = key.substr(-1);
+        console.log(octave);
+        octaveSelection(currentPiano - 1, octave);
         playKey(key, true);
 
         setTimeout(function () {
