@@ -121,6 +121,7 @@ export function octaveSelection(piano, octave) {
 
 function pulseKey(event, isDown) {
     const octave = octaveSelected;
+    octaveSelection(currentPiano -1, octaveSelected)
 
     let musicNote = event.key.toUpperCase();
     if (event.shiftKey) {

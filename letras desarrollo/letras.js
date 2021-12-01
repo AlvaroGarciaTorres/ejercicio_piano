@@ -163,3 +163,7 @@ slower.onclick = function(event){
     timeout *= 2;
     console.log(`Velocidad: ${timeout/1000} segundos`);
 }
+
+document.body.onkeydown = function(event){
+    console.log(event.key);
+}

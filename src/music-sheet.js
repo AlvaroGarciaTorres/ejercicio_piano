@@ -3,7 +3,8 @@ import "../css/music-sheet.css";
 import { octaveSelected, octaveSelection, playKey } from "./piano.js";
 
 let actualKeyIndex = 0;
-let timeout = 500;
+
+export let timeout = 500;
 
 export let t = null;
 
@@ -81,7 +82,7 @@ export function playMusicSheet(callback) {
             return;
         }
 
-        playMusicSheet();
+        playMusicSheet(callback);
     }, timeout);
 
     return function stop() {
@@ -93,6 +94,6 @@ export function playMusicSheet(callback) {
 }
 
 export function changeTimeout(code){
-    if(code == 0) timeout / 2;
-    else if (code == 1) timeout * 2;
+    if(code == 1) timeout /= 2;
+    else if (code == 0) timeout *= 2;
 }

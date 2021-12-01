@@ -30,21 +30,20 @@ function newstop() { //SE HCE GLOBAL PORQUE NO ES NECESARIO QUE SE CREEN TANTAS 
     clearTimeout(t);
 };
 
-createButton("faster");
+createButton("Faster");
+createButton("Slower");
 
 const play = document.getElementById("play");
 const stop = document.getElementById("stop");
 const ligato = document.getElementById("ligato");
 const newPiano = document.getElementById("createPiano");
 const file = document.getElementById("file");
-const faster = document.getElementById("faster");
+const faster = document.getElementById("Faster");
+const slower = document.getElementById("Slower");
 
 let stopfn = function () {
 
 };
-
-
-
 
 play.onclick = function (event) {
     event.preventDefault();
@@ -53,7 +52,7 @@ play.onclick = function (event) {
     play.disabled = true;
     stop.disabled = false;
     file.disabled = true;
-    stopfn = playMusicSheet(function() {
+    stopfn = playMusicSheet(function(){
         play.disabled = false;
         stop.disabled = true; 
         file.disabled = false;
@@ -91,6 +90,11 @@ newPiano.onclick= function (event) {
 faster.onclick = function(event){
     event.preventDefault();
     stopfn = changeTimeout(1);
+}
+
+slower.onclick = function(event){
+    event.preventDefault();
+    stopfn = changeTimeout(0);
 }
 
 const createNewPiano = () => {    
