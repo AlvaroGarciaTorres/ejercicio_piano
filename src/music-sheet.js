@@ -3,6 +3,9 @@ import "../css/music-sheet.css";
 import { octaveSelected, octaveSelection, playKey } from "./piano.js";
 
 let actualKeyIndex = 0;
+let timeout = 500;
+
+export let t = null;
 
 export const musicSheet = "A1,C#3,B1,C4,F5,C3,A#2,C1";
 
@@ -31,7 +34,7 @@ export function playMusicSheet(callback) {
     const musicSheetDOM = document.getElementById("music-sheet");
     const musicSheetKeysDOM = musicSheetDOM.childNodes;
 
-    const interval = setInterval(function () {
+    /*const interval = setInterval(function () {
         const musicSheetKeyDOM = musicSheetKeysDOM[actualKeyIndex];
         musicSheetKeyDOM.classList.add("play");
         const key = musicSheetKeyDOM.innerText;
@@ -53,12 +56,43 @@ export function playMusicSheet(callback) {
             callback();
             return;
         }
-    }, 500);
+    }, timeout);*/
+
+    t = setTimeout(function(){
+        const musicSheetKeyDOM = musicSheetKeysDOM[actualKeyIndex];
+        musicSheetKeyDOM.classList.add("play");
+        const key = musicSheetKeyDOM.innerText;
+        let octave = key.substr(-1);
+        console.log(octave);
+        octaveSelection(currentPiano - 1, octave);
+        playKey(key, true);
+
+        setTimeout(function () {
+            playKey(key, false);
+            musicSheetKeyDOM.classList.remove("play");
+        }, 450);
+
+        actualKeyIndex++;
+
+        if (actualKeyIndex >= musicSheetKeysDOM.length) {
+            clearTimeout(t);
+            actualKeyIndex = 0;
+            callback();
+            return;
+        }
+
+        playMusicSheet();
+    }, timeout);
 
     return function stop() {
         const musicSheetKeyDOM = musicSheetKeysDOM[actualKeyIndex];
         musicSheetKeyDOM.classList.add("play"); //marca la nota que se está reproduciendo cuando se pulsa stop
-        clearInterval(interval);
+        //clearInterval(interval);
+        clearTimeout(t);
     };
+}
 
+export function changeTimeout(code){
+    if(code == 0) timeout / 2;
+    else if (code == 1) timeout * 2;
 }

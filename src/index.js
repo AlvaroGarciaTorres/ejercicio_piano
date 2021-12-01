@@ -3,7 +3,7 @@ import "../css/key.css";
 import "../css/octave.css";
 import "../css/piano.css";
 import { allDOMKeys, createPiano, octaveSelection, octaveSelected } from "./piano.js";
-import { actualKeyIndex, readMusicSheet, playMusicSheet, musicSheet } from "./music-sheet.js";
+import { actualKeyIndex, readMusicSheet, playMusicSheet, musicSheet, changeTimeout } from "./music-sheet.js";
 import { playLigato } from "./ligato.js";
 import { checkPiano } from "./utilityFunctions.js";
 
@@ -17,15 +17,33 @@ export let allDOMPianos;
 
 currentPiano = 1;
 
+
+const createButton = (str) => { //función genérica para crear bootones con id y nombre del argumento
+    const button = document.createElement("button");
+    button.id = `${str}`;
+    button.innerHTML = `${str}`;
+    document.body.appendChild(button);
+}
+
+function newstop() { //SE HCE GLOBAL PORQUE NO ES NECESARIO QUE SE CREEN TANTAS FUNCIONES STOP
+    console.log("yes");
+    clearTimeout(t);
+};
+
+createButton("faster");
+
 const play = document.getElementById("play");
 const stop = document.getElementById("stop");
 const ligato = document.getElementById("ligato");
 const newPiano = document.getElementById("createPiano");
 const file = document.getElementById("file");
-//play.style.visibility = "hidden";
+const faster = document.getElementById("faster");
+
 let stopfn = function () {
 
 };
+
+
 
 
 play.onclick = function (event) {
@@ -51,7 +69,7 @@ stop.onclick = function (event) {
     stopfn();
 }
 
-ligato.onclick= function (event) {
+ligato.onclick = function (event) {
     event.preventDefault();
     if(!checkPiano()) return; 
     stop.style.visibility = "visible";
@@ -68,6 +86,11 @@ ligato.onclick= function (event) {
 newPiano.onclick= function (event) { 
     allDOMPianos = createNewPiano();
     event.preventDefault();   
+}
+
+faster.onclick = function(event){
+    event.preventDefault();
+    stopfn = changeTimeout(1);
 }
 
 const createNewPiano = () => {    
